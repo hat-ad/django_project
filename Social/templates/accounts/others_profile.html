@@ -1,0 +1,235 @@
+<!doctype html>
+{% load static %}
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+    <title>Coder</title>
+</head>
+
+<!--Background Image-->
+<style>
+    body {
+        background-image: url('https://images.wallpaperscraft.com/image/code_text_programming_146694_1920x1080.jpg');
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-size: cover;
+    }
+
+    .bg-dark {
+        background-color: #343a40d8 !important
+    }
+
+    div.bottom {
+        position: absolute;
+        width: 100%;
+        bottom: 1px;
+        border: 1px solid #f8f9fa;
+        background-color: #ffff;
+    }
+
+    .dropdown-menu {
+        min-width: 10px;
+    }
+
+    .dim {
+        width: 200px;
+        height: 200px;
+        border: black 1px solid;
+        border-radius: 25px;
+        padding: 20px;
+    }
+</style>
+
+<body>
+    <!--navbar-->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="/">
+            <h3>Coder</h3>
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item ">
+                    <a class="nav-link" href="/doubt">Doubt</a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" href="/users">Users</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/contact">Contact</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="/about">About</a>
+                </li>
+            </ul>
+            <form class="form-inline my-2 my-lg-0" method="get" action="/search">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" name="search"
+                    aria-label="Search">
+                <button class="btn btn-success my-2 my-sm-0 mr-sm-2" type="submit">Search</button>
+            </form>
+            {% if user.is_authenticated %}
+            <div class="btn-group">
+                <button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false">
+                    <span class="my-2">Welcome,{{user.first_name}}</span>
+                </button>
+                <div class="dropdown-menu">
+                    <button type="button" class="dropdown-item" data-toggle="modal"
+                        data-target="#Logout">Logout</button>
+                </div>
+            </div>
+            {% else %}
+            <a type="button" class="btn btn-success my-2 my-sm-0 mr-sm-2" href='/register'>Register</a>
+            <button type="button" class="btn btn-success my-2 my-sm-0 mr-sm-2" data-toggle="modal"
+                data-target="#Login">Login</button>
+            {% endif %}
+        </div>
+    </nav>
+
+
+
+    <!--Login modal-->
+    <div class="modal fade" id="Login" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ModalLabel">Login</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form method="post" action="login">{% csrf_token %}
+                    <div class="modal-body">
+
+                        <div class="form-group">
+                            <label for="username" class="col-form-label">Username:</label>
+                            <input type="text" class="form-control" id="username" name="username" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="password" class="col-form-label">password:</label>
+                            <input type="password" class="form-control" id="password" name="password" required>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="reset" class="btn btn-secondary">Reset</button>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!--logout modal-->
+    <div class="modal fade" id="Logout" tabindex="-1" role="dialog" aria-labelledby="ModalLabel1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ModalLabel1">Logout</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <h6>Are you Sure?</h6>
+                </div>
+                <form method="post" action="logout">{% csrf_token %}
+                    <div class="modal-footer">
+                        <button type="submit" class="btn btn-warning">Logout</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!--alerts-->
+    {% for message in messages %}
+    {% if message.tags == 'error' %}
+    <div class="alert alert-danger" role="alert">
+        {{message}}
+    </div>
+    {% else %}
+    <div class="alert alert-{{message.tags}}" role="alert">
+        {{message}}
+    </div>
+    {% endif %}
+    {% endfor %}
+
+
+    <!--Profile Info-->
+    {% for user in profile %}
+    {% for extra in extrainfo %}
+    <div class="container my-2">
+        <div class="card mb-3" style="max-width: 1200px;">
+            <div class="row no-gutters">
+                <div class="col-md-2 mx-4 my-4">
+                    <img src={% static "icons\user.png" %} class="dim">
+                </div>
+                <div class="col-md-6">
+                    <div class="card-body">
+                        <h3 class="card-title mx-3">{{user.username}}</h3>
+                        <ul class="list-group  list-group-horizontal my-4 mt-5 pt-5 mx-3">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Followers
+                                <span class="badge badge-primary badge-pill ml-3">14</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Following
+                                <span class="badge badge-primary badge-pill ml-3">2</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                Rating
+                                <span class="badge badge-primary badge-pill ml-3">1</span>
+                            </li>
+                        </ul>
+                        <form method="POST" action='otherprof'>{% csrf_token %}
+                            {% if user.followed %}
+                            <input type="hidden" name='decision' value='unfollow'>
+                            <input type="hidden" name='id' value='{{user.username}}'>
+                            <button class="btn btn-danger pos" type="submit">unfollow</button>
+                            {% else %}
+                            <input type="hidden" name='id' value='{{user.username}}'>
+                            <input type="hidden" name='decision' value='follow'>
+                            <button class="btn btn-primary pos" type="submit">follow</button>
+                            {% endif %}
+                        </form>
+                        <p class="card-text mx-3">Name: {{user.first_name}}</p>
+                        <p class="card-text mx-3">email: {{user.email}}</p>
+                        <p class="card-text mx-3">College: {{extra.college}}</p>
+                        <p class="card-text mx-3">Year: {{extra.year}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+    {% endfor %}
+
+
+
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
